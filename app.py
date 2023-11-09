@@ -7,7 +7,7 @@ import torch
 import datetime
 
 from joblib import load
-# from mlp_utils import TorchImagePreprocessor, MLPRegressor
+from mlp_utils import TorchImagePreprocessor, MLPRegressor
 
 # Globals
 AIRPORTS = ["ATL", "BOS", "CLT", "DEN", "DFW", "DTW", "EWR", "IAD", 
@@ -22,7 +22,7 @@ MODEL_PATHS = {
     'xgb_d_ensemble': './models/xgb_d_data.csv',
     'xgb_n_ensemble': './models/xgb_n_data.csv',
     'random_forest':'./models/rf_model_pipeline.joblib',
-    # 'mlp': './models/mlp-l1norm-processor-kh.joblib',
+    'mlp': './models/mlp-l1norm-processor-kh.joblib',
     'linear_regression':'./models/simple-regression-zb-attempt3.joblib'
 }
 
@@ -363,75 +363,75 @@ def parse_user_inputs_rf():
     return df
 
 
-# def parse_user_inputs_mlp():
-#     """
-#     Parse and prepare user inputs for mlp model.
+def parse_user_inputs_mlp():
+    """
+    Parse and prepare user inputs for mlp model.
 
-#     This function takes user inputs for origin, destination, departure date, departure time, and cabin type, distance(min,max,mean,std),flightDate_is_holiday,flightDate_is_weekend
-#     It also process the input for specific data engineering required.
+    This function takes user inputs for origin, destination, departure date, departure time, and cabin type, distance(min,max,mean,std),flightDate_is_holiday,flightDate_is_weekend
+    It also process the input for specific data engineering required.
 
-#     Returns: df (DataDrame)
+    Returns: df (DataDrame)
 
-#     """
-#     # Ensure data type is correct
-#     depart_date = pd.to_datetime(st.session_state["departure_date"])
-#     depart_df = pd.Series(depart_date)
-#     search_date = pd.to_datetime("today")
+    """
+    # Ensure data type is correct
+    depart_date = pd.to_datetime(st.session_state["departure_date"])
+    depart_df = pd.Series(depart_date)
+    search_date = pd.to_datetime("today")
 
-#     # Assignment tests allow backdated predictions. Assume search date is historical as well.
-#     if depart_date < search_date:
-#         search_date = depart_date
+    # Assignment tests allow backdated predictions. Assume search date is historical as well.
+    if depart_date < search_date:
+        search_date = depart_date
 
-#     # Change User input time to epoch format to match training data
-#     epoch_timestamp = convert_epoch_time()
+    # Change User input time to epoch format to match training data
+    epoch_timestamp = convert_epoch_time()
 
-#     cabin_map = {"first": 4, "business": 3, "premium coach": 2, "coach": 1}
+    cabin_map = {"first": 4, "business": 3, "premium coach": 2, "coach": 1}
 
-#     us_holidays = ["2022-04-17", "2022-05-30", "2022-07-04"]
+    us_holidays = ["2022-04-17", "2022-05-30", "2022-07-04"]
 
-#     distance_matrix = pd.read_csv(
-#         f'../src/distancematrices/{st.session_state["origin"]}.csv'
-#     )
+    distance_matrix = pd.read_csv(
+        f'./data/distancematrices/{st.session_state["origin"]}.csv'
+    )
 
-#     input_dict = {
-#         "startingAirport": st.session_state["origin"],
-#         "destinationAirport": st.session_state["destination"],
-#         "isNonStop": 1,
-#         "segmentsDepartureTimeEpochSeconds": epoch_timestamp,
-#         "segmentsCabinCode": cabin_map[st.session_state["cabin_type"]],
-#         "day_diff": np.nan,
-#         "search_year": search_date.year,
-#         "search_month": search_date.month,
-#         "search_day_of_month": search_date.day,
-#         "search_day_of_week": search_date.dayofweek,
-#         "flight_year": depart_date.year,
-#         "flight_month": depart_date.month,
-#         "flight_day_of_month": depart_date.day,
-#         "flight_day_of_week": depart_date.dayofweek,
-#         "flight_weekend": (1 if depart_date.dayofweek >= 5 else 0),
-#         "flight_isHoliday": depart_df.dt.strftime("%Y-%m-%d")
-#         .isin(us_holidays)
-#         .astype(int),
-#         "distance_min": distance_matrix[
-#             distance_matrix["destinationAirport"] == st.session_state["destination"]
-#         ]["distance_min"].values[0],
-#         "distance_max": distance_matrix[
-#             distance_matrix["destinationAirport"] == st.session_state["destination"]
-#         ]["distance_max"].values[0],
-#         "distance_std": distance_matrix[
-#             distance_matrix["destinationAirport"] == st.session_state["destination"]
-#         ]["distance_std"].values[0],
-#         "distance_mean": distance_matrix[
-#             distance_matrix["destinationAirport"] == st.session_state["destination"]
-#         ]["distance_mean"].values[0],
-#     }
+    input_dict = {
+        "startingAirport": st.session_state["origin"],
+        "destinationAirport": st.session_state["destination"],
+        "isNonStop": 1,
+        "segmentsDepartureTimeEpochSeconds": epoch_timestamp,
+        "segmentsCabinCode": cabin_map[st.session_state["cabin_type"]],
+        "day_diff": np.nan,
+        "search_year": search_date.year,
+        "search_month": search_date.month,
+        "search_day_of_month": search_date.day,
+        "search_day_of_week": search_date.dayofweek,
+        "flight_year": depart_date.year,
+        "flight_month": depart_date.month,
+        "flight_day_of_month": depart_date.day,
+        "flight_day_of_week": depart_date.dayofweek,
+        "flight_weekend": (1 if depart_date.dayofweek >= 5 else 0),
+        "flight_isHoliday": depart_df.dt.strftime("%Y-%m-%d")
+        .isin(us_holidays)
+        .astype(int),
+        "distance_min": distance_matrix[
+            distance_matrix["destinationAirport"] == st.session_state["destination"]
+        ]["distance_min"].values[0],
+        "distance_max": distance_matrix[
+            distance_matrix["destinationAirport"] == st.session_state["destination"]
+        ]["distance_max"].values[0],
+        "distance_std": distance_matrix[
+            distance_matrix["destinationAirport"] == st.session_state["destination"]
+        ]["distance_std"].values[0],
+        "distance_mean": distance_matrix[
+            distance_matrix["destinationAirport"] == st.session_state["destination"]
+        ]["distance_mean"].values[0],
+    }
 
-#     df = pd.DataFrame.from_dict(input_dict, orient="index").T
-#     df["segmentsDepartureTimeEpochSeconds"] = pd.to_numeric(
-#         df["segmentsDepartureTimeEpochSeconds"]
-#     )
+    df = pd.DataFrame.from_dict(input_dict, orient="index").T
+    df["segmentsDepartureTimeEpochSeconds"] = pd.to_numeric(
+        df["segmentsDepartureTimeEpochSeconds"]
+    )
 
-#     return df
+    return df
 
 
 def get_remaining_airports(origin):
@@ -714,16 +714,15 @@ Departure times are in `24hr` format and departure dates are `YYYY-MM-DD`.
         predict_df_slr = parse_user_inputs_linear_regression()
         st.session_state["result_model1"] = slr_model.predict(predict_df_slr)[0]
 
-        # mlp model
-        # mlp_processor = get_model("mlp")
-        # mlp_regressor = torch.load(
-        #     "./models/mlp-l1norm-regressor-kh.pth",
-        #     map_location=torch.device("cpu"),
-        # )
-        # mlp_prediction = parse_user_inputs_mlp()
-        # mlp_prediction = mlp_processor.transform(mlp_prediction)
-        # st.session_state["result_model2"] = mlp_regressor.predict(mlp_prediction)[0][0]
-        st.session_state["result_model2"] = 0.0
+        mlp model
+        mlp_processor = get_model("mlp")
+        mlp_regressor = torch.load(
+            "./models/mlp-l1norm-regressor-kh.pth",
+            map_location=torch.device("cpu"),
+        )
+        mlp_prediction = parse_user_inputs_mlp()
+        mlp_prediction = mlp_processor.transform(mlp_prediction)
+        st.session_state["result_model2"] = mlp_regressor.predict(mlp_prediction)[0][0]
 
         # XGBoost model
         xgb_model = get_model("xgboost")
