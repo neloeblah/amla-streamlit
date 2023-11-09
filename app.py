@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 # import numpy as np
 # import xgboost as xgb
-# import plotly.graph_objects as go
+import plotly.graph_objects as go
 # import torch
 # import datetime
 
@@ -526,112 +526,112 @@ def sidebar_setup():
         )
 
 
-# def plot_flight_paths():
-#     """
-#     Generate a plot of flight paths and airport locations.
+def plot_flight_paths():
+    """
+    Generate a plot of flight paths and airport locations.
 
-#     This function generates a plot that displays flight paths and airport locations.
-#     It extracts flight path data from a list of airports, and adds traces for flight paths and airport locations.
-#     It also highlights the flight path selected based on user inputs.
+    This function generates a plot that displays flight paths and airport locations.
+    It extracts flight path data from a list of airports, and adds traces for flight paths and airport locations.
+    It also highlights the flight path selected based on user inputs.
 
-#     Returns:
-#         plotly.graph_objs.Figure: A Plotly figure representing the flight paths and airport locations.
-#     """
+    Returns:
+        plotly.graph_objs.Figure: A Plotly figure representing the flight paths and airport locations.
+    """
 
-#     # Airport Co-ordinates
-#     df = pd.read_csv("../src/data/airport_coords.csv")
-#     df["text"] = (
-#         df["code"] + "<br>" + df["airport"].str.replace("Interational Airport", "")
-#     )
+    # Airport Co-ordinates
+    df = pd.read_csv("./data/airport_coords.csv")
+    df["text"] = (
+        df["code"] + "<br>" + df["airport"].str.replace("Interational Airport", "")
+    )
 
-#     # Initialise plot
-#     fig = go.Figure()
+    # Initialise plot
+    fig = go.Figure()
 
-#     # Extract flight paths
-#     lons = []
-#     lats = []
-#     n = df.shape[0] - 1
-#     for i in range(n):
-#         for j in range(df.loc[i + 1 :].shape[0]):
-#             lons.append(df.loc[i, "longitude"])
-#             lons.append(df.loc[j, "longitude"])
-#             lons.append(None)
+    # Extract flight paths
+    lons = []
+    lats = []
+    n = df.shape[0] - 1
+    for i in range(n):
+        for j in range(df.loc[i + 1 :].shape[0]):
+            lons.append(df.loc[i, "longitude"])
+            lons.append(df.loc[j, "longitude"])
+            lons.append(None)
 
-#             lats.append(df.loc[i, "latitude"])
-#             lats.append(df.loc[j, "latitude"])
-#             lats.append(None)
+            lats.append(df.loc[i, "latitude"])
+            lats.append(df.loc[j, "latitude"])
+            lats.append(None)
 
-#     # Plot flight paths
-#     fig.add_trace(
-#         go.Scattergeo(
-#             locationmode="USA-states",
-#             lon=lons,
-#             lat=lats,
-#             mode="lines",
-#             line=dict(width=0.5, color="blue"),
-#             opacity=0.3,
-#             name="",
-#             text="",
-#         )
-#     )
+    # Plot flight paths
+    fig.add_trace(
+        go.Scattergeo(
+            locationmode="USA-states",
+            lon=lons,
+            lat=lats,
+            mode="lines",
+            line=dict(width=0.5, color="blue"),
+            opacity=0.3,
+            name="",
+            text="",
+        )
+    )
 
-#     # Plot aiport locations and labels
-#     fig.add_trace(
-#         go.Scattergeo(
-#             locationmode="USA-states",
-#             lon=df["longitude"],
-#             lat=df["latitude"],
-#             hoverinfo="text",
-#             text=df["text"],
-#             mode="markers",
-#             marker=dict(
-#                 size=9,
-#                 color="rgb(0, 0, 0)",
-#                 line=dict(width=3, color="rgba(68, 68, 68, 0)"),
-#             ),
-#         )
-#     )
+    # Plot aiport locations and labels
+    fig.add_trace(
+        go.Scattergeo(
+            locationmode="USA-states",
+            lon=df["longitude"],
+            lat=df["latitude"],
+            hoverinfo="text",
+            text=df["text"],
+            mode="markers",
+            marker=dict(
+                size=9,
+                color="rgb(0, 0, 0)",
+                line=dict(width=3, color="rgba(68, 68, 68, 0)"),
+            ),
+        )
+    )
 
-#     # Highlight flight path selected from User Inputs
-#     selected = [st.session_state["origin"], st.session_state["destination"]]
-#     predicted = df.loc[df["code"].isin(selected)]
-#     pred_lats = [x for x in predicted["latitude"]]
-#     pred_lons = [x for x in predicted["longitude"]]
+    # Highlight flight path selected from User Inputs
+    selected = [st.session_state["origin"], st.session_state["destination"]]
+    predicted = df.loc[df["code"].isin(selected)]
+    pred_lats = [x for x in predicted["latitude"]]
+    pred_lons = [x for x in predicted["longitude"]]
 
-#     fig.add_trace(
-#         go.Scattergeo(
-#             locationmode="USA-states",
-#             lon=pred_lons,
-#             lat=pred_lats,
-#             mode="markers+lines",
-#             line=dict(width=3, color="red"),
-#             marker=dict(
-#                 size=10, color="red", line=dict(width=3, color="rgba(68, 68, 68, 0)")
-#             ),
-#             opacity=1,
-#             name="Predicted",
-#             text="",
-#         )
-#     )
+    fig.add_trace(
+        go.Scattergeo(
+            locationmode="USA-states",
+            lon=pred_lons,
+            lat=pred_lats,
+            mode="markers+lines",
+            line=dict(width=3, color="red"),
+            marker=dict(
+                size=10, color="red", line=dict(width=3, color="rgba(68, 68, 68, 0)")
+            ),
+            opacity=1,
+            name="Predicted",
+            text="",
+        )
+    )
 
-#     # Formatting
-#     fig.update_layout(
-#         title_text="Flight Paths<br>(Hover for airport names)",
-#         showlegend=False,
-#         geo=go.layout.Geo(
-#             scope="north america",
-#             projection_type="azimuthal equal area",  # 'albers usa'
-#             projection_scale=1.2,
-#             showland=True,
-#             landcolor="rgb(243, 243, 243)",
-#             countrycolor="rgb(204, 204, 204)",
-#             center=dict(lon=-100, lat=35),
-#         ),
-#         height=450,
-#         margin=dict(l=20, r=20, t=20, b=0, pad=0),
-#     )
+    # Formatting
+    fig.update_layout(
+        title_text="Flight Paths<br>(Hover for airport names)",
+        showlegend=False,
+        geo=go.layout.Geo(
+            scope="north america",
+            projection_type="azimuthal equal area",  # 'albers usa'
+            projection_scale=1.2,
+            showland=True,
+            landcolor="rgb(243, 243, 243)",
+            countrycolor="rgb(204, 204, 204)",
+            center=dict(lon=-100, lat=35),
+        ),
+        height=450,
+        margin=dict(l=20, r=20, t=20, b=0, pad=0),
+    )
 
-#     return fig
+    return fig
 
 
 def update_cache_msg():
@@ -785,10 +785,10 @@ Departure times are in `24hr` format and departure dates are `YYYY-MM-DD`.
     #         hide_index=True,
     #     )
 
-    # # Show flight path plot
-    # st.write("")
-    # fig = plot_flight_paths()
-    # st.plotly_chart(fig, use_container_width=True)
+    # Show flight path plot
+    st.write("")
+    fig = plot_flight_paths()
+    st.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":
