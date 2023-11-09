@@ -9,6 +9,7 @@ packages = [{include = "amla_streamlit"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 streamlit = "1.27.2"
+pandas = "2.0.1"
 
 
 [build-system]
