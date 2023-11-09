@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Streamlit app for AT3"
 authors = ["Martin Neloe <Martin.A.Neloe@student.edu.au>"]
 readme = "README.md"
-packages = [{include = "amla_streamlit"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
