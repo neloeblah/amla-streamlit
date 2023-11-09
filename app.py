@@ -718,7 +718,7 @@ Departure times are in `24hr` format and departure dates are `YYYY-MM-DD`.
         mlp_processor = get_model("mlp")
         mlp_regressor = torch.load(
             "./models/mlp-l1norm-regressor-kh.pth",
-            map_location=torch.device("cpu"),
+            #map_location=torch.device("cpu"),
         )
         mlp_prediction = parse_user_inputs_mlp()
         mlp_prediction = mlp_processor.transform(mlp_prediction)
