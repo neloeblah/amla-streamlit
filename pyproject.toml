@@ -13,6 +13,7 @@ pandas = "2.0.1"
 plotly = "^5.18.0"
 scikit-learn = "1.2.2"
 xgboost = "2.0.1"
+torch = "^2.1.0"
 torchvision = "0.16.0"
 gensim = "4.3.2"
 
