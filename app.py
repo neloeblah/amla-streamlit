@@ -714,7 +714,7 @@ Departure times are in `24hr` format and departure dates are `YYYY-MM-DD`.
         predict_df_slr = parse_user_inputs_linear_regression()
         st.session_state["result_model1"] = slr_model.predict(predict_df_slr)[0]
 
-        mlp model
+        # MLP model
         mlp_processor = get_model("mlp")
         mlp_regressor = torch.load(
             "./models/mlp-l1norm-regressor-kh.pth",
