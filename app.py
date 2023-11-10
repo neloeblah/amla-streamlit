@@ -715,14 +715,21 @@ Departure times are in `24hr` format and departure dates are `YYYY-MM-DD`.
         st.session_state["result_model1"] = slr_model.predict(predict_df_slr)[0]
 
         # MLP model
-        # mlp_processor = get_model("mlp")
-        # mlp_regressor = torch.load(
-        #     "./models/mlp-l1norm-regressor-kh.pth",
-        #     map_location=torch.device("cpu"),
-        # )
-        # mlp_prediction = parse_user_inputs_mlp()
-        # mlp_prediction = mlp_processor.transform(mlp_prediction)
-        # st.session_state["result_model2"] = mlp_regressor.predict(mlp_prediction)[0][0]
+        mlp_processor = get_model("mlp")
+        mlp_regressor = MLPRegressor(50, 128)
+        path_mlp_regressor = "../models/mlp-l1norm-regressor-"
+        mlp_regressor.model.load_state_dict(
+            torch.load(
+                path_mlp_regressor + "model-statedict-kh.pth",
+                map_location=torch.device("cpu"),
+            )
+        )
+        mlp_regressor.target_scaler = load(
+            path_mlp_regressor + "targetscaler-kh.joblib"
+        )
+        mlp_prediction = parse_user_inputs_mlp()
+        mlp_prediction = mlp_processor.transform(mlp_prediction)
+        st.session_state["result_model2"] = mlp_regressor.predict(mlp_prediction)[0][0]
 
         # XGBoost model
         xgb_model = get_model("xgboost")
