@@ -16,6 +16,7 @@ xgboost = "2.0.1"
 torch = "^2.1.0"
 torchvision = "0.16.0"
 gensim = "4.3.2"
+matplotlib = "^3.8.1"
 
 
 [[tool.poetry.source]]
